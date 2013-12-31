@@ -549,10 +549,11 @@ def decode_navdata(packet):
             values = struct.unpack_from("IIfffifffI", "".join(values))
             values = dict(zip(['ctrl_state', 'battery', 'theta', 'phi', 'psi', 'altitude', 'vx', 'vy', 'vz', 'num_frames'], values))
             # convert the millidegrees into degrees and round to int, as they
-            values['ctrl_state'] = ctrl_state_dict[values['ctrl_state']]
-            # are not so precise anyways
-            for i in 'theta', 'phi', 'psi':
-                values[i] = int(values[i] / 1000)
+            if values['ctrl_state'] is None:
+              values['ctrl_state'] = ctrl_state_dict[values['ctrl_state']]
+              # are not so precise anyways
+              for i in 'theta', 'phi', 'psi':
+                  values[i] = int(values[i] / 1000)
         data[id_nr] = values
     return data, has_flying_information
 
